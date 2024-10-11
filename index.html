@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Store</title>
+    <style>
+        /* General reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        /* Header styles */
+        .header {
+            background-color: #ff6600;
+            padding: 10px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        /* Menu bar styles */
+        .menu {
+            display: flex;
+            gap: 20px;
+        }
+
+        .menu a {
+            color: white;
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .menu a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .header-icons i {
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .search-bar {
+            border: none;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        /* Product list styles */
+        .product-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-around;
+            margin-top: 30px;
+        }
+
+        .product-item {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 15px;
+            width: 250px;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        .product-item h3 {
+            margin-bottom: 10px;
+        }
+
+        .add-product-btn {
+            padding: 15px 25px;
+            background-color: #ff6600;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            margin: 10px;
+        }
+
+        .add-product-btn:hover {
+            background-color: #e55d00;
+        }
+
+        /* Dynamic Ad Section */
+        .ad-section {
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #ffe6cc;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .ad-section img {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+        }
+
+        /* Admin Button */
+        .admin-btn {
+            display: block;
+            margin: 20px 0;
+            padding: 10px 20px;
+            background-color: #ff6600;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        /* Hidden forms */
+        #admin-login-form, #product-form {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #eee;
+            border-radius: 8px;
+        }
+
+        #admin-login-form input, #product-form input, #product-form button {
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+        }
+
+        #admin-login-form button, #product-form button {
+            background-color: #ff6600;
+            color: white;
+        }
+
+        /* Footer styles */
+        footer {
+            background-color: #ff6600;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        /* Responsive styles */
+        @media screen and (max-width: 768px) {
+            .product-list {
+                flex-direction: column;
+            }
+
+            .product-item {
+                width: 100%;
+            }
+
+            .ad-section img {
+                max-height: 200px;
+            }
+
+            .menu {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">Mama zack home of fasion </div>
+        <nav class="menu">
+            <a href="cart.html">Cart</a>
+            <a href="#admin" onclick="toggleAdminLogin()">Admin Access</a>
+        </nav>
+        <div class="header-icons">
+            <i class="fas fa-search"></i>
+            <i class="fas fa-shopping-cart"></i>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Dynamic Ad Section -->
+        <div class="ad-section">
+            <h2>Featured Product</h2>
+            <img id="featuredProductImage" src="" alt="Featured Product">
+            <p id="featuredProductName"></p>
+        </div>
+
+        <!-- Storefront -->
+        <h1>Our Products</h1>
+        <div class="product-list" id="product-list">
+            <!-- Products will be added dynamically here -->
+        </div>
+
+        <!-- Admin Login Form -->
+        <div id="admin-login-form">
+            <h2>Admin Login</h2>
+            <input type="text" id="admin-username" placeholder="Username" required />
+            <input type="password" id="admin-password" placeholder="Password" required />
+            <button id="login-btn">Login</button>
+        </div>
+
+        <!-- Add Product Form (Hidden initially) -->
+        <div id="product-form">
+            <h2>Add Product</h2>
+            <input type="text" id="product-name" placeholder="Product Name" required />
+            <input type="text" id="product-desc" placeholder="Product Description" required />
+            <input type="number" id="product-price" placeholder="Price" required />
+            <input type="text" id="product-img" placeholder="Image URL" required />
+            <input type="text" id="product-category" placeholder="Category" required />
+            <button onclick="addProduct()">Add Product</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <!-- About Us -->
+            <div class="footer-column">
+                <h3>About Us</h3>
+                <p>Your go-to destination for the latest in hair and fashion trends. We bring you the best styles and quality products.</p>
+            </div>
+    
+            <!-- Customer Service -->
+            <div class="footer-column">
+                <h3>Customer Service</h3>
+                <ul>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Shipping & Returns</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Track Order</a></li>
+                </ul>
+            </div>
+    
+            <!-- Follow Us -->
+            <div class="footer-column">
+                <h3>Follow Us</h3>
+                <div class="social-links">
+                    <a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-pinterest-p"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-youtube"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-snapchat-ghost"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+    
+            <!-- Subscribe -->
+            <div class="footer-column">
+                <h3>Subscribe</h3>
+                <p>Sign up for exclusive offers and updates!</p>
+                <form id="subscribe-form">
+                    <input type="email" id="subscriber-email" placeholder="Your Email" required>
+                    <button type="submit">Subscribe</button>
+                </form>
+                <p id="subscribe-message" class="subscribe-message"></p>
+            </div>
+        </div>
+    
+        <div class="footer-bottom">
+            <p>&copy; 2024 Hair & Fashion Store. mama zack  All Rights Reserved.</p>
+        </div>
+    </footer>
+    
+    <!-- Include Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .footer {
+            background-color: #333;
+            color: #fff;
+            padding: 50px 20px;
+            text-align: center;
+        }
+    
+        .footer-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: auto;
+        }
+    
+        .footer-column {
+            width: 100%;
+            max-width: 250px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+    
+        .footer-column h3 {
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+    
+        .footer-column p, .footer-column ul {
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+    
+        .footer-column ul {
+            list-style: none;
+            padding: 0;
+        }
+    
+        .footer-column ul li {
+            margin-bottom: 8px;
+        }
+    
+        .footer-column ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+    
+        .footer-column ul li a:hover {
+            text-decoration: underline;
+        }
+    
+        .social-links {
+            display: flex;
+            gap: 10px;
+        }
+    
+        .social-links a {
+            color: #fff;
+            font-size: 20px;
+            transition: color 0.3s;
+        }
+    
+        .social-links a:hover {
+            color: #ff6600;
+        }
+    
+        .footer-column input[type="email"] {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            width: calc(100% - 20px);
+            margin-top: 10px;
+            font-size: 14px;
+        }
+    
+        .footer-column button[type="submit"] {
+            background-color: #ff6600;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+    
+        .footer-column button[type="submit"]:hover {
+            background-color: #e55d00;
+        }
+    
+        .subscribe-message {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+    
+        .footer-bottom {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #555;
+        }
+    
+        @media (max-width: 768px) {
+            .footer-container {
+                flex-direction: column;
+                align-items: center;
+            }
+    
+            .footer-column {
+                max-width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+    
+    <script>
+        // Handle subscription form submission
+        document.getElementById('subscribe-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent page refresh
+    
+            const emailInput = document.getElementById('subscriber-email');
+            const email = emailInput.value;
+            const messagePara = document.getElementById('subscribe-message');
+    
+            // Simple email validation (you can enhance this)
+            if (email.includes('@')) {
+                messagePara.style.color = 'green';
+                messagePara.textContent = 'Thank you for subscribing!';
+                emailInput.value = '';
+    
+                // Simulate sending email to your mail (this is a placeholder)
+                console.log(`New subscriber: ${email}`);
+    
+                // You can add your email sending logic here (e.g., using AJAX to send the email to your server)
+            } else {
+                messagePara.style.color = 'red';
+                messagePara.textContent = 'Please enter a valid email address.';
+            }
+        });
+    </script>
+    
+    <!-- FontAwesome for icons -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+    <script>
+        // Array to hold products
+        let products = JSON.parse(localStorage.getItem('products')) || [];
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        // Dynamic featured product interval
+        function changeFeaturedProduct() {
+            if (products.length > 0) {
+                let randomIndex = Math.floor(Math.random() * products.length);
+                let featuredProduct = products[randomIndex];
+                document.getElementById('featuredProductImage').src = featuredProduct.image;
+                document.getElementById('featuredProductName').textContent = featuredProduct.name;
+            }
+        }
+
+        setInterval(changeFeaturedProduct, 5000); // Change product every 5 seconds
+
+        // Toggle admin login form visibility
+        function toggleAdminLogin() {
+            const adminForm = document.getElementById('admin-login-form');
+            if (adminForm.style.display === 'none' || adminForm.style.display === '') {
+                adminForm.style.display = 'block';
+            } else {
+                adminForm.style.display = 'none';
+            }
+        }
+
+        // Admin login
+        const validUsername = 'admin';
+        const validPassword = 'password123';
+
+        document.getElementById('login-btn').addEventListener('click', function() {
+            const username = document.getElementById('admin-username').value;
+            const password = document.getElementById('admin-password').value;
+
+            if (username === validUsername && password === validPassword) {
+                document.getElementById('admin-login-form').style.display = 'none';
+                document.getElementById('product-form').style.display = 'block';
+            } else {
+                alert('Incorrect login details');
+            }
+        });
+
+        // Function to add a new product
+        function addProduct() {
+            const name = document.getElementById('product-name').value;
+            const desc = document.getElementById('product-desc').value;
+            const price = document.getElementById('product-price').value;
+            const image = document.getElementById('product-img').value;
+            const category = document.getElementById('product-category').value;
+
+            const newProduct = {
+                name,
+                desc,
+                price,
+                image,
+                category
+            };
+
+            products.push(newProduct);
+            localStorage.setItem('products', JSON.stringify(products));
+            displayProducts();
+            document.getElementById('product-form').reset(); // Reset the form fields
+        }
+
+        // Function to add products to cart
+        function addToCart(productIndex) {
+            const selectedProduct = products[productIndex];
+            cart.push(selectedProduct);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            alert(`${selectedProduct.name} has been added to your cart!`);
+        }
+
+        // Display products on the store
+        function displayProducts() {
+            const productList = document.getElementById('product-list');
+            productList.innerHTML = '';
+
+            products.forEach((product, index) => {
+                const productDiv = document.createElement('div');
+                productDiv.classList.add('product-item');
+                productDiv.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}">
+                    <h3>${product.name}</h3>
+                    <p>${product.desc}</p>
+                    <p>$${product.price}</p>
+                    <button class="add-product-btn" onclick="addToCart(${index})">Add to Cart</button>
+                `;
+                productList.appendChild(productDiv);
+            });
+        }
+
+        // Initial load
+        displayProducts();
+    </script>
+</body>
+</html>
